@@ -1,5 +1,5 @@
 pygame
 torch
 pandas
-cv2-python
+opencv-python
 mediapipe
