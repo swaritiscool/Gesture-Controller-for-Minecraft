@@ -1,0 +1,5 @@
+pygame
+torch
+pandas
+cv2-python
+mediapipe
