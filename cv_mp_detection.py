@@ -11,7 +11,7 @@ import pandas
 MODEL_PATH = "hand_landmarker.task"
 
 num_samples = int(input("Enter num samples: "))
-internal_clock = 1
+internal_clock=1
 
 baseOptions = mp.tasks.BaseOptions
 handLandmarker = vision.HandLandmarker
@@ -118,7 +118,7 @@ while cap.isOpened():
         if rec.lower() == "y": record = True
         else: record= False
         internal_clock +=1
-        num_samples = num_samples * internal_clock
+        num_samples = num_samples/(internal_clock-1) * internal_clock
         print(f"Samples left: {num_samples - num_samples/internal_clock}")
         print(f"End Sample: {num_samples-1}")
     cv2.imshow("Hand Landmarks", frame)
