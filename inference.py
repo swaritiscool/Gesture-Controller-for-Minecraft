@@ -1,3 +1,4 @@
+import time
 import cv2
 import mediapipe as mp
 from mediapipe.tasks import python
@@ -6,8 +7,11 @@ import torch
 import torch.nn as nn
 import numpy as np
 from pynput.keyboard import Controller, Key
+from pynput.mouse import Controller as ctrlmou
+from pynput.mouse import Button
 
 keyboard = Controller()
+mouse = ctrlmou()
 
 # --- Model Definition (from train_and_test.py) ---
 class Model(nn.Module):
@@ -53,10 +57,8 @@ gesture_labels = {
     2: "fight"
 }
 
-def forward():
-    print("Attempting key press")
-    keyboard.press("w")
-    keyboard.release("w")
+w_enb = False
+s_enb = False
 
 # --- Video Capture and Inference Loop ---
 cap = cv2.VideoCapture(0)
@@ -120,8 +122,33 @@ while cap.isOpened():
         # Draw landmarks and predicted gesture
         draw_hand_landmarks(frame, result.hand_landmarks)
         cv2.putText(frame, predicted_gesture, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-        if predicted_gesture == "forward": forward()
+        if predicted_gesture == "forward":
+            keyboard.tap(Key.ctrl)
+            keyboard.press("w")
+            w_enb = True
+        else:
+            if w_enb:
+                keyboard.release("w")
+                w_enb = False
+        if predicted_gesture == "backward":
+            keyboard.tap(Key.ctrl)
+            keyboard.press("s")
+            s_enb = True
+        else:
+            if s_enb:
+                keyboard.release("s")
+                s_enb = False
+        if predicted_gesture == "fight":
+            mouse.click(Button.left, 2)
 
+    else:
+        if w_enb:
+            keyboard.release("w")
+            w_enb = False
+
+        if s_enb:
+            keyboard.release("s")
+            s_enb = False
     cv2.imshow("Hand Gesture Inference", frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
