@@ -13,7 +13,7 @@ X_df = df.drop(columns=['sample_id', 'label'])
 y_df = df['label']
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X_df, y_df, test_size=0.2, stratify=y_df, random_state=42
+    X_df, y_df, test_size=0.4, stratify=y_df, random_state=359
 )
 
 X_train = torch.tensor(X_train.values, dtype=torch.float32)
